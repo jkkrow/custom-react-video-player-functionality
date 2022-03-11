@@ -2,7 +2,6 @@ import { useState, memo, useMemo, useCallback, useRef, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import { ReactComponent as ArrowLeftIcon } from 'icons/arrow-left.svg';
-import { useOutsideClickHandler } from '../../../../hooks/outside-click-hook';
 
 interface DropdownProps {
   on: boolean;
@@ -19,6 +18,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   onClose,
   onChangePlaybackRate,
 }) => {
+  const [isMounted, setIsMounted] = useState(false);
   const [isIndex, setIsIndex] = useState(true);
   const [activeMenu, setActiveMenu] = useState<'resolution' | 'speed'>('speed');
   const [dropdownHeight, setDropdownHeight] = useState<'initial' | number>(
@@ -27,7 +27,22 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClickHandler(dropdownRef.current, () => onClose(false));
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const outsideClickHandler = (event: MouseEvent) => {
+      if (!isMounted || !dropdownRef || !dropdownRef.current) return;
+      if (!dropdownRef.current.contains(event.target as Node)) {
+        onClose(false);
+      }
+    };
+
+    document.addEventListener('click', outsideClickHandler);
+
+    return () => {
+      document.removeEventListener('click', outsideClickHandler);
+    };
+  }, [isMounted, onClose]);
 
   useEffect(() => {
     if (!on) return;
@@ -46,7 +61,12 @@ const Dropdown: React.FC<DropdownProps> = ({
     []
   );
 
+  const dropdownEnteredHandler = useCallback(() => {
+    setIsMounted(true);
+  }, []);
+
   const dropdownExitedHandler = useCallback(() => {
+    setIsMounted(false);
     setIsIndex(true);
     setDropdownHeight('initial');
   }, []);
@@ -113,6 +133,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       timeout={200}
       mountOnEnter
       unmountOnExit
+      onEntered={dropdownEnteredHandler}
       onExited={dropdownExitedHandler}
     >
       <div
