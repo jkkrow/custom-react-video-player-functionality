@@ -2,7 +2,7 @@ import { useState, memo, useMemo, useCallback, useRef, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import { ReactComponent as ArrowLeftIcon } from '../../../../icons/arrow-left.svg';
-import { useOutsideClickHandler } from '../../../../hooks/outside-click-hook';
+// import { useOutsideClickHandler } from '../../../../hooks/outside-click-hook';
 
 interface DropdownProps {
   on: boolean;
@@ -27,7 +27,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClickHandler(dropdownRef.current, () => onClose(false));
+  // useOutsideClickHandler(dropdownRef.current, () => onClose(false));
 
   useEffect(() => {
     if (!on) return;
