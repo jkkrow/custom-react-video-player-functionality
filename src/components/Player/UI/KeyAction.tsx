@@ -36,7 +36,7 @@ const KeyAction = forwardRef<KeyActionHandler, KeyActionProps>(
       <div className="vp-key-action">
         <CSSTransition
           in={on}
-          classNames="key-volume"
+          classNames="vp-key-volume"
           timeout={300}
           mountOnEnter
           unmountOnExit

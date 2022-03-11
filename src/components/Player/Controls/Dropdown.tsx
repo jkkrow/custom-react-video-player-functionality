@@ -1,4 +1,4 @@
-import { useState, memo, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, memo, useCallback, useRef, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import { ReactComponent as ArrowLeftIcon } from 'icons/arrow-left.svg';
@@ -20,7 +20,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isIndex, setIsIndex] = useState(true);
-  const [activeMenu, setActiveMenu] = useState<'resolution' | 'speed'>('speed');
+  const [activeType, setActiveType] = useState<'speed' | 'resolution'>('speed');
   const [dropdownHeight, setDropdownHeight] = useState<'initial' | number>(
     'initial'
   );
@@ -53,13 +53,10 @@ const Dropdown: React.FC<DropdownProps> = ({
     setDropdownHeight(dropdownMenu?.offsetHeight || 'initial');
   }, [on]);
 
-  const selectMenuHandler = useCallback(
-    (activeMenu: 'resolution' | 'speed') => {
-      setIsIndex(false);
-      setActiveMenu(activeMenu);
-    },
-    []
-  );
+  const selectMenuHandler = useCallback((type: 'speed' | 'resolution') => {
+    setIsIndex(false);
+    setActiveType(type);
+  }, []);
 
   const dropdownEnteredHandler = useCallback(() => {
     setIsMounted(true);
@@ -71,60 +68,71 @@ const Dropdown: React.FC<DropdownProps> = ({
     setDropdownHeight('initial');
   }, []);
 
-  const calcHeight = useCallback((element) => {
+  const calcHeight = useCallback((element: HTMLElement) => {
     setDropdownHeight(element.offsetHeight);
   }, []);
 
-  const indexMenu = useMemo(() => {
-    return (
-      <div className="vp-dropdown__menu">
-        <ul className="vp-dropdown__list">
-          <li
-            className="vp-dropdown__item"
-            onClick={() => selectMenuHandler('speed')}
-          >
-            <span>Speed</span>
-            <span>x {activePlaybackRate}</span>
-          </li>
-        </ul>
+  const indexMenu = (
+    <div className="vp-dropdown__menu">
+      <ul className="vp-dropdown__list">
+        <li
+          className="vp-dropdown__item"
+          onClick={() => selectMenuHandler('speed')}
+        >
+          <span>Speed</span>
+          <span>x {activePlaybackRate}</span>
+        </li>
+        <li
+          className="vp-dropdown__item"
+          onClick={() => selectMenuHandler('resolution')}
+        >
+          <span>Resolution</span>
+          <span>1080p</span>
+        </li>
+      </ul>
+    </div>
+  );
+
+  const mainMenu = (
+    <div className="vp-dropdown__menu">
+      <div className="vp-dropdown__label" onClick={() => setIsIndex(true)}>
+        <ArrowLeftIcon />
+        <span>
+          {activeType === 'speed' && 'Speed'}
+          {activeType === 'resolution' && 'Resolution'}
+        </span>
       </div>
-    );
-  }, [activePlaybackRate, selectMenuHandler]);
-
-  const menuList = useMemo(() => {
-    const changePlaybackRateHandler = (playbackRate: number) => {
-      onChangePlaybackRate(playbackRate);
-      setIsIndex(true);
-    };
-
-    switch (activeMenu) {
-      case 'speed':
-        return (
-          <div className="vp-dropdown__menu">
-            <div
-              className="vp-dropdown__label"
+      <ul className="vp-dropdown__list">
+        {activeType === 'speed' &&
+          playbackRates.map((playbackRate) => (
+            <li
+              key={playbackRate}
+              className={`vp-dropdown__item${
+                activePlaybackRate === playbackRate ? ' active' : ''
+              }`}
+              onClick={() => {
+                onChangePlaybackRate(playbackRate);
+                setIsIndex(true);
+              }}
+            >
+              {playbackRate}
+            </li>
+          ))}
+        {activeType === 'resolution' &&
+          [540, 720, 1080].map((resolution) => (
+            <li
+              key={resolution}
+              className={`vp-dropdown__item${
+                resolution === 1080 ? ' active' : ''
+              }`}
               onClick={() => setIsIndex(true)}
             >
-              <ArrowLeftIcon />
-              <span>Speed</span>
-            </div>
-            <ul className="vp-dropdown__list">
-              {playbackRates.map((playbackRate) => (
-                <li
-                  key={playbackRate}
-                  className={`vp-dropdown__item${
-                    activePlaybackRate === playbackRate ? ' active' : ''
-                  }`}
-                  onClick={() => changePlaybackRateHandler(playbackRate)}
-                >
-                  {playbackRate}
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-    }
-  }, [activeMenu, playbackRates, activePlaybackRate, onChangePlaybackRate]);
+              {resolution}
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
 
   return (
     <CSSTransition
@@ -143,7 +151,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       >
         <CSSTransition
           in={isIndex}
-          classNames="menu-index"
+          classNames="vp-menu-index"
           timeout={300}
           mountOnEnter
           unmountOnExit
@@ -154,13 +162,13 @@ const Dropdown: React.FC<DropdownProps> = ({
 
         <CSSTransition
           in={!isIndex}
-          classNames="menu-main"
+          classNames="vp-menu-main"
           timeout={300}
           mountOnEnter
           unmountOnExit
           onEnter={calcHeight}
         >
-          {menuList}
+          {mainMenu}
         </CSSTransition>
       </div>
     </CSSTransition>
