@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import Btn from './Btn';
-import { ReactComponent as TrackRewindIcon } from '../../../../icons/track-rewind.svg';
+import { ReactComponent as TrackRewindIcon } from 'icons/track-rewind.svg';
 
 interface RewindProps {
   onRewind: () => void;

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import Btn from './Btn';
-import { ReactComponent as SettingIcon } from '../../../../icons/gear.svg';
+import { ReactComponent as SettingIcon } from 'icons/gear.svg';
 
 interface SettingsProps {
   onToggle: () => void;

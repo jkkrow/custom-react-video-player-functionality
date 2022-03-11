@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import Btn from './Btn';
-import { ReactComponent as TrackSkipIcon } from '../../../../icons/track-skip.svg';
+import { ReactComponent as TrackSkipIcon } from 'icons/track-skip.svg';
 
 interface SkipProps {
   onSkip: () => void;

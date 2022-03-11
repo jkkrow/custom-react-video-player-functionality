@@ -1,6 +1,6 @@
 import Btn from './Btn';
-import { ReactComponent as PipInIcon } from '../../../../icons/pip-in.svg';
-import { ReactComponent as PipOutIcon } from '../../../../icons/pip-out.svg';
+import { ReactComponent as PipInIcon } from 'icons/pip-in.svg';
+import { ReactComponent as PipOutIcon } from 'icons/pip-out.svg';
 
 interface PipProps {
   isPipMode: boolean;
