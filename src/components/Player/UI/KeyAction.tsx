@@ -1,12 +1,12 @@
 import { forwardRef, memo, useImperativeHandle, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-import { ReactComponent as VolumeHighIcon } from 'icons/volume-high.svg';
-import { ReactComponent as VolumeMiddleIcon } from 'icons/volume-middle.svg';
-import { ReactComponent as VolumeLowIcon } from 'icons/volume-low.svg';
-import { ReactComponent as VolumeMuteIcon } from 'icons/volume-mute.svg';
-import { ReactComponent as TrackRewindIcon } from 'icons/track-rewind.svg';
-import { ReactComponent as TrackSkipIcon } from 'icons/track-skip.svg';
+import { ReactComponent as VolumeHighIcon } from '../../../icons/volume-high.svg';
+import { ReactComponent as VolumeMiddleIcon } from '../../../icons/volume-middle.svg';
+import { ReactComponent as VolumeLowIcon } from '../../../icons/volume-low.svg';
+import { ReactComponent as VolumeMuteIcon } from '../../../icons/volume-mute.svg';
+import { ReactComponent as TrackRewindIcon } from '../../../icons/track-rewind.svg';
+import { ReactComponent as TrackSkipIcon } from '../../../icons/track-skip.svg';
 
 export interface KeyActionHandler {
   rewind: HTMLDivElement;

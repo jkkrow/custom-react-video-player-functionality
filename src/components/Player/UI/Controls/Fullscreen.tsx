@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
 import Btn from './Btn';
-import { ReactComponent as FullscreenIcon } from 'icons/fullscreen.svg';
-import { ReactComponent as FullscreenExitIcon } from 'icons/fullscreen-exit.svg';
+import { ReactComponent as FullscreenIcon } from '../../../../icons/fullscreen.svg';
+import { ReactComponent as FullscreenExitIcon } from '../../../../icons/fullscreen-exit.svg';
 
 interface FullscreenProps {
   isFullscreen: boolean;

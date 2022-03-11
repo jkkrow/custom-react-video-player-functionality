@@ -1,10 +1,10 @@
 import { memo } from 'react';
 
 import Btn from './Btn';
-import { ReactComponent as VolumeHighIcon } from 'icons/volume-high.svg';
-import { ReactComponent as VolumeMiddleIcon } from 'icons/volume-middle.svg';
-import { ReactComponent as VolumeLowIcon } from 'icons/volume-low.svg';
-import { ReactComponent as VolumeMuteIcon } from 'icons/volume-mute.svg';
+import { ReactComponent as VolumeHighIcon } from '../../../../icons/volume-high.svg';
+import { ReactComponent as VolumeMiddleIcon } from '../../../../icons/volume-middle.svg';
+import { ReactComponent as VolumeLowIcon } from '../../../../icons/volume-low.svg';
+import { ReactComponent as VolumeMuteIcon } from '../../../../icons/volume-mute.svg';
 
 interface VolumeProps {
   volume: number;
