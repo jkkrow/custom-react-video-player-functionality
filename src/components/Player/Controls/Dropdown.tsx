@@ -82,13 +82,13 @@ const Dropdown: React.FC<DropdownProps> = ({
           <span>Speed</span>
           <span>x {activePlaybackRate}</span>
         </li>
-        <li
+        {/* <li
           className="vp-dropdown__item"
           onClick={() => selectMenuHandler('resolution')}
         >
           <span>Resolution</span>
           <span>1080p</span>
-        </li>
+        </li> */}
       </ul>
     </div>
   );
@@ -118,7 +118,7 @@ const Dropdown: React.FC<DropdownProps> = ({
               {playbackRate}
             </li>
           ))}
-        {activeType === 'resolution' &&
+        {/* {activeType === 'resolution' &&
           [540, 720, 1080].map((resolution) => (
             <li
               key={resolution}
@@ -129,7 +129,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             >
               {resolution}
             </li>
-          ))}
+          ))} */}
       </ul>
     </div>
   );
