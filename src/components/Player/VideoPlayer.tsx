@@ -11,7 +11,7 @@ import Fullscreen from './Controls/Fullscreen';
 import Settings from './Controls/Settings';
 import Dropdown from './Controls/Dropdown';
 import Loader from './UI/Loader';
-import KeyAction, { KeyActionHandler } from './UI/KeyAction';
+import KeyAction, { KeyActionHandle } from './UI/KeyAction';
 import Error from './UI/Error';
 import { useTimeout } from '../../hooks/timer-hook';
 import { useLocalStorage } from '../../hooks/storage-hook';
@@ -80,7 +80,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoProgressRef = useRef<HTMLDivElement>(null);
-  const videoKeyActionRef = useRef<KeyActionHandler>(null);
+  const videoKeyActionRef = useRef<KeyActionHandle>(null);
 
   const playPromise = useRef<Promise<void>>();
   const volumeData = useRef(volumeState || 1);
@@ -279,7 +279,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   );
 
   /**
-   * Rewind & Skip
+   * REWIND & SKIP
    */
 
   const rewindHandler = useCallback(() => {
@@ -526,9 +526,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
    * RENDER
    */
 
-  return videoError ? (
-    <Error />
-  ) : (
+  return (
     <div
       className="vp-container"
       ref={videoContainerRef}
@@ -559,6 +557,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
         on={volumeKeyAction}
         volume={volumeState}
       />
+      <Error on={videoError} />
       <div
         className={`vp-controls${!displayControls ? ' hide' : ''}`}
         onMouseDown={showControlsHandler}

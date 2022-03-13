@@ -8,7 +8,7 @@ import { ReactComponent as VolumeMuteIcon } from 'icons/volume-mute.svg';
 import { ReactComponent as TrackRewindIcon } from 'icons/track-rewind.svg';
 import { ReactComponent as TrackSkipIcon } from 'icons/track-skip.svg';
 
-export interface KeyActionHandler {
+export interface KeyActionHandle {
   rewind: HTMLDivElement;
   skip: HTMLDivElement;
 }
@@ -18,7 +18,7 @@ interface KeyActionProps {
   volume: number;
 }
 
-const KeyAction = forwardRef<KeyActionHandler, KeyActionProps>(
+const KeyAction = forwardRef<KeyActionHandle, KeyActionProps>(
   ({ on, volume }, ref) => {
     const rewindRef = useRef<HTMLDivElement>(null);
     const skipRef = useRef<HTMLDivElement>(null);
