@@ -24,57 +24,30 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
-  // vp-container
   const [displayCursor, setDisplayCursor] = useState<'default' | 'none'>(
     'default'
   );
-
-  // vp-controls
   const [displayControls, setDisplayControls] = useState(true);
-
-  // playback
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  // volume
+  const [playbackState, setPlaybackState] = useState(false);
   const [volumeState, setVolumeState] = useLocalStorage('video-volume', 1);
-
-  // progress
   const [currentProgress, setCurrentProgress] = useState(0);
   const [bufferProgress, setBufferProgress] = useState(0);
   const [seekProgress, setSeekProgress] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
-
-  // seek tooltip
   const [seekTooltip, setSeekTooltip] = useState('00:00');
   const [seekTooltipPosition, setSeekTooltipPosition] = useState('');
-
-  // time ui
   const [currentTimeUI, setCurrentTimeUI] = useState('00:00');
   const [remainedTimeUI, setRemainedTimeUI] = useState('00:00');
-
-  // pip
   const [pipState, setPipState] = useState(false);
-
-  // fullscreen
   const [fullscreenState, setFullscreenState] = useState(false);
-
-  // dropdown
   const [displayDropdown, setDisplayDropdown] = useState(false);
-
-  // playbackRate
   const [playbackRates] = useState([0.5, 0.75, 1, 1.25, 1.5]);
   const [activePlaybackRate, setActivePlaybackRate] = useLocalStorage(
     'video-playbackrate',
     1
   );
-
-  // vp-loader
   const [displayLoader, setDisplayLoader] = useState(true);
-
-  // vp-key-action
   const [volumeKeyAction, setvolumeKeyAction] = useState(false);
-
-  // error
   const [videoError, setVideoError] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -121,7 +94,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   }, [hideControlsHandler, setControlsTimeout]);
 
   /**
-   * PLAYBACK CONTROL
+   * PLAYBACK
    */
 
   const togglePlayHandler = useCallback(() => {
@@ -144,15 +117,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   }, [showControlsHandler]);
 
   const videoPlayHandler = useCallback(() => {
-    setIsPlaying(true);
+    setPlaybackState(true);
   }, []);
 
   const videoPauseHandler = useCallback(() => {
-    setIsPlaying(false);
+    setPlaybackState(false);
   }, []);
 
   /**
-   * LOADING CONTROL
+   * LOADING
    */
 
   const showLoaderHandler = useCallback(() => {
@@ -165,7 +138,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   }, [clearLoaderTimeout]);
 
   /**
-   * VOLUME CONTROL
+   * VOLUME
    */
 
   const volumeInputHandler = useCallback(
@@ -204,7 +177,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   }, [setVolumeState]);
 
   /**
-   * TIME CONTROL
+   * TIME
    */
 
   const timeChangeHandler = useCallback(() => {
@@ -240,7 +213,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   }, []);
 
   /**
-   * SKIP CONTROL
+   * SKIP
    */
 
   const seekMouseMoveHandler = useCallback((event: React.MouseEvent) => {
@@ -341,7 +314,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   }, []);
 
   /**
-   * PIP CONTROL
+   * PIP
    */
 
   const togglePipHandler = useCallback(() => {
@@ -361,7 +334,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   }, []);
 
   /**
-   * FULLSCREEN CONTROL
+   * FULLSCREEN
    */
 
   const toggleFullscreenHandler = useCallback(() => {
@@ -594,7 +567,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
           </div>
           <div>
             <Rewind onRewind={rewindHandler} />
-            <Playback isPlaying={isPlaying} onToggle={togglePlayHandler} />
+            <Playback isPlaying={playbackState} onToggle={togglePlayHandler} />
             <Skip onSkip={skipHandler} />
           </div>
           <div>
