@@ -45,7 +45,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   );
   const [displayLoader, setDisplayLoader] = useState(true);
   const [volumeKeyAction, setvolumeKeyAction] = useState(false);
-  const [videoError, setVideoError] = useState(false);
+  const [videoError, setVideoError] = useState<MediaError | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -395,17 +395,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
       switch (key) {
         case 'ArrowLeft':
           event.preventDefault();
-
           rewindHandler();
           break;
         case 'ArrowRight':
           event.preventDefault();
-
           skipHandler();
           break;
         case 'ArrowUp':
           event.preventDefault();
-
           if (video.volume + 0.05 > 1) {
             video.volume = 1;
           } else {
@@ -420,7 +417,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
           break;
         case 'ArrowDown':
           event.preventDefault();
-
           if (video.volume - 0.05 < 0) {
             video.volume = 0;
           } else {
@@ -435,7 +431,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
           break;
         case ' ':
           event.preventDefault();
-
           togglePlayHandler();
           break;
       }
@@ -478,7 +473,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
    */
 
   const errorHandler = useCallback(() => {
-    setVideoError(true);
+    const video = videoRef.current!;
+
+    video.error && setVideoError(video.error);
   }, []);
 
   /**
@@ -527,7 +524,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
         on={volumeKeyAction}
         volume={volumeState}
       />
-      <Error on={videoError} />
+      <Error error={videoError} />
       <div className={`vp-controls${!displayControls ? ' hide' : ''}`}>
         <Dropdown
           on={displayDropdown}

@@ -13,10 +13,6 @@ interface VolumeProps {
 }
 
 const Volume: React.FC<VolumeProps> = ({ volume, onToggle, onSeek }) => {
-  const preventDefault = (e: React.KeyboardEvent) => {
-    e.preventDefault();
-  };
-
   return (
     <div className="vp-volume">
       <Btn onClick={onToggle}>
@@ -40,7 +36,6 @@ const Volume: React.FC<VolumeProps> = ({ volume, onToggle, onSeek }) => {
           max="1"
           step="0.05"
           onChange={onSeek}
-          onKeyDown={preventDefault}
         />
       </div>
     </div>

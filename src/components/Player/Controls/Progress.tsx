@@ -21,10 +21,6 @@ const Progress: React.FC<ProgressProps> = ({
   onHover,
   onSeek,
 }) => {
-  const preventDefault = (e: React.KeyboardEvent) => {
-    e.preventDefault();
-  };
-
   return (
     <div className="vp-progress">
       <div className="vp-progress__range">
@@ -47,7 +43,6 @@ const Progress: React.FC<ProgressProps> = ({
           value={seekProgress}
           onMouseMove={onHover}
           onChange={onSeek}
-          onKeyDown={preventDefault}
         />
       </div>
 

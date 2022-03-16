@@ -4,17 +4,20 @@ import { ReactComponent as ReloadIcon } from 'icons/reload.svg';
 import './Error.css';
 
 interface ErrorProps {
-  on: boolean;
+  error: MediaError | null;
 }
 
-const Error: React.FC<ErrorProps> = ({ on }) => {
+const Error: React.FC<ErrorProps> = ({ error }) => {
   const refreshHandler = () => {
     window.location.reload();
   };
 
-  return on ? (
+  return error ? (
     <div className="vp-error">
-      <p>Error occurred! Please try again</p>
+      <p>
+        {error.code ? `${error.code}: ` : ''}
+        {error.message || 'Error occurred! Please try again'}
+      </p>
       <ReloadIcon onClick={refreshHandler} />
     </div>
   ) : null;
