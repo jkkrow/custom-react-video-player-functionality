@@ -1,0 +1,45 @@
+.vp-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(4rem, 6vw, 6rem);
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 30;
+}
+.vp-loader div {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  box-shadow: 0.05em 0.05em 0 0 #cd131c;
+  transform-origin: 0.5em;
+  animation: vp-loader 1s linear infinite;
+}
+
+.vp-loader-enter {
+  opacity: 0;
+}
+.vp-loader-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-out;
+}
+.vp-loader-exit {
+  opacity: 1;
+}
+.vp-loader-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+@keyframes vp-loader {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

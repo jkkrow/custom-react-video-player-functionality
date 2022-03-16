@@ -10,9 +10,9 @@ import Pip from './Controls/Pip';
 import Fullscreen from './Controls/Fullscreen';
 import Settings from './Controls/Settings';
 import Dropdown from './Controls/Dropdown';
-import Loader from './UI/Loader';
-import KeyAction, { KeyActionHandle } from './UI/KeyAction';
-import Error from './UI/Error';
+import Loader from './UI/Loader/Loader';
+import KeyAction, { KeyActionHandle } from './UI/KeyAction/KeyAction';
+import Error from './UI/Error/Error';
 import { useTimeout } from '../../hooks/timer-hook';
 import { useLocalStorage } from '../../hooks/storage-hook';
 import { formatTime } from '../../util/format';
@@ -24,9 +24,6 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
-  const [displayCursor, setDisplayCursor] = useState<'default' | 'none'>(
-    'default'
-  );
   const [displayControls, setDisplayControls] = useState(true);
   const [playbackState, setPlaybackState] = useState(false);
   const [volumeState, setVolumeState] = useLocalStorage('video-volume', 1);
@@ -52,7 +49,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  const videoProgressRef = useRef<HTMLDivElement>(null);
   const videoKeyActionRef = useRef<KeyActionHandle>(null);
 
   const playPromise = useRef<Promise<void>>();
@@ -80,7 +76,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
   const showControlsHandler = useCallback(() => {
     const video = videoRef.current!;
 
-    setDisplayCursor('default');
     setDisplayControls(true);
 
     if (video.paused) {
@@ -89,7 +84,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
 
     setControlsTimeout(() => {
       hideControlsHandler();
-      !video.paused && setDisplayCursor('none');
     }, 2000);
   }, [hideControlsHandler, setControlsTimeout]);
 
@@ -102,27 +96,27 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
 
     if (video.paused || video.ended) {
       playPromise.current = video.play();
-      showControlsHandler();
       return;
     }
 
-    if (playPromise.current === undefined) {
+    if (!playPromise.current) {
       return;
     }
 
     playPromise.current.then(() => {
       video.pause();
-      showControlsHandler();
     });
-  }, [showControlsHandler]);
+  }, []);
 
   const videoPlayHandler = useCallback(() => {
     setPlaybackState(true);
-  }, []);
+    showControlsHandler();
+  }, [showControlsHandler]);
 
   const videoPauseHandler = useCallback(() => {
     setPlaybackState(false);
-  }, []);
+    showControlsHandler();
+  }, [showControlsHandler]);
 
   /**
    * LOADING
@@ -206,36 +200,39 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
     }
 
     // Time
-    setCurrentTimeUI(formatTime(Math.round(currentTime)));
-    setRemainedTimeUI(
-      formatTime(Math.round(duration) - Math.round(currentTime))
+    const formattedCurrentTime = formatTime(Math.round(currentTime));
+    const formattedRemainedTime = formatTime(
+      Math.round(duration) - Math.round(currentTime)
     );
+
+    setCurrentTimeUI(formattedCurrentTime);
+    setRemainedTimeUI(formattedRemainedTime);
   }, []);
 
   /**
-   * SKIP
+   * SEEK
    */
 
   const seekMouseMoveHandler = useCallback((event: React.MouseEvent) => {
     const video = videoRef.current!;
-    const progress = videoProgressRef.current!;
 
-    const rect = progress.getBoundingClientRect();
-    const skipTo =
-      (event.nativeEvent.offsetX / progress.offsetWidth) * video.duration;
-    let newTime: string;
-
-    if (skipTo > video.duration) {
-      newTime = formatTime(video.duration);
-    } else if (skipTo < 0) {
-      newTime = '00:00';
-    } else {
-      newTime = formatTime(skipTo);
-      setSeekTooltipPosition(`${event.pageX - rect.left}px`);
-    }
+    const rect = event.currentTarget.getBoundingClientRect();
+    const skipTo = (event.nativeEvent.offsetX / rect.width) * video.duration;
 
     progressSeekData.current = skipTo;
-    setSeekTooltip(newTime);
+
+    let formattedTime: string;
+
+    if (skipTo > video.duration) {
+      formattedTime = formatTime(video.duration);
+    } else if (skipTo < 0) {
+      formattedTime = '00:00';
+    } else {
+      formattedTime = formatTime(skipTo);
+      setSeekTooltipPosition(`${event.nativeEvent.offsetX}px`);
+    }
+
+    setSeekTooltip(formattedTime);
   }, []);
 
   const seekInputHandler = useCallback(
@@ -450,7 +447,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
    * LOAD VIDEO
    */
 
-  const videoLoadHandler = useCallback(() => {
+  const videoLoadedHandler = useCallback(() => {
     const video = videoRef.current!;
 
     video.volume = volumeState;
@@ -503,7 +500,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
     <div
       className="vp-container"
       ref={videoContainerRef}
-      style={{ cursor: displayCursor }}
+      style={{ cursor: displayControls ? 'default' : 'none' }}
       onMouseMove={showControlsHandler}
       onMouseLeave={hideControlsHandler}
     >
@@ -511,7 +508,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
         ref={videoRef}
         src={src}
         controls={false}
-        onLoadedMetadata={videoLoadHandler}
+        onLoadedMetadata={videoLoadedHandler}
         onClick={togglePlayHandler}
         onPlay={videoPlayHandler}
         onPause={videoPauseHandler}
@@ -531,10 +528,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
         volume={volumeState}
       />
       <Error on={videoError} />
-      <div
-        className={`vp-controls${!displayControls ? ' hide' : ''}`}
-        onMouseDown={showControlsHandler}
-      >
+      <div className={`vp-controls${!displayControls ? ' hide' : ''}`}>
         <Dropdown
           on={displayDropdown}
           playbackRates={playbackRates}
@@ -545,7 +539,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, autoPlay = true }) => {
         <div className="vp-controls__header">
           <Time time={currentTimeUI} />
           <Progress
-            ref={videoProgressRef}
             bufferProgress={bufferProgress}
             currentProgress={currentProgress}
             videoDuration={videoDuration}

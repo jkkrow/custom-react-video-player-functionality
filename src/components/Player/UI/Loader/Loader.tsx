@@ -1,6 +1,8 @@
 import { memo } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
+import './Loader.css';
+
 interface LoaderProps {
   on: boolean;
   style?: React.CSSProperties;

@@ -7,6 +7,7 @@ import { ReactComponent as VolumeLowIcon } from 'icons/volume-low.svg';
 import { ReactComponent as VolumeMuteIcon } from 'icons/volume-mute.svg';
 import { ReactComponent as TrackRewindIcon } from 'icons/track-rewind.svg';
 import { ReactComponent as TrackSkipIcon } from 'icons/track-skip.svg';
+import './KeyAction.css';
 
 export interface KeyActionHandle {
   rewind: HTMLDivElement;

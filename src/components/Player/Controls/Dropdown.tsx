@@ -53,11 +53,6 @@ const Dropdown: React.FC<DropdownProps> = ({
     setDropdownHeight(dropdownMenu?.offsetHeight || 'initial');
   }, [on]);
 
-  const selectMenuHandler = useCallback((type: 'speed' | 'resolution') => {
-    setIsIndex(false);
-    setActiveType(type);
-  }, []);
-
   const dropdownEnteredHandler = useCallback(() => {
     setIsMounted(true);
   }, []);
@@ -72,19 +67,33 @@ const Dropdown: React.FC<DropdownProps> = ({
     setDropdownHeight(element.offsetHeight);
   }, []);
 
+  const selectMenuHandler = useCallback((type: 'speed' | 'resolution') => {
+    return () => {
+      setIsIndex(false);
+      setActiveType(type);
+    };
+  }, []);
+
+  const selectPlaybackRateHandler = useCallback(
+    (playbackRate: number) => {
+      return () => {
+        setIsIndex(true);
+        onChangePlaybackRate(playbackRate);
+      };
+    },
+    [onChangePlaybackRate]
+  );
+
   const indexMenu = (
     <div className="vp-dropdown__menu">
       <ul className="vp-dropdown__list">
-        <li
-          className="vp-dropdown__item"
-          onClick={() => selectMenuHandler('speed')}
-        >
+        <li className="vp-dropdown__item" onClick={selectMenuHandler('speed')}>
           <span>Speed</span>
           <span>x {activePlaybackRate}</span>
         </li>
         {/* <li
           className="vp-dropdown__item"
-          onClick={() => selectMenuHandler('resolution')}
+          onClick={selectMenuHandler('resolution')}
         >
           <span>Resolution</span>
           <span>1080p</span>
@@ -110,10 +119,7 @@ const Dropdown: React.FC<DropdownProps> = ({
               className={`vp-dropdown__item${
                 activePlaybackRate === playbackRate ? ' active' : ''
               }`}
-              onClick={() => {
-                onChangePlaybackRate(playbackRate);
-                setIsIndex(true);
-              }}
+              onClick={selectPlaybackRateHandler(playbackRate)}
             >
               {playbackRate}
             </li>

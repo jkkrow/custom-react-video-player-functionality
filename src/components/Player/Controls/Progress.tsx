@@ -1,4 +1,4 @@
-import { memo, forwardRef } from 'react';
+import { memo } from 'react';
 
 interface ProgressProps {
   videoDuration: number;
@@ -11,59 +11,54 @@ interface ProgressProps {
   onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Progress = forwardRef<HTMLDivElement, ProgressProps>(
-  (
-    {
-      bufferProgress,
-      currentProgress,
-      videoDuration,
-      seekProgress,
-      seekTooltipPosition,
-      seekTooltip,
-      onHover,
-      onSeek,
-    },
-    ref
-  ) => {
-    const preventDefault = (e: React.KeyboardEvent) => {
-      e.preventDefault();
-    };
+const Progress: React.FC<ProgressProps> = ({
+  bufferProgress,
+  currentProgress,
+  videoDuration,
+  seekProgress,
+  seekTooltipPosition,
+  seekTooltip,
+  onHover,
+  onSeek,
+}) => {
+  const preventDefault = (e: React.KeyboardEvent) => {
+    e.preventDefault();
+  };
 
-    return (
-      <div className="vp-progress" ref={ref}>
-        <div className="vp-progress__range">
-          <div className="vp-progress__range--background" />
-          <div
-            className="vp-progress__range--buffer"
-            style={{ width: bufferProgress + '%' }}
-          />
-          <div
-            className="vp-progress__range--current"
-            style={{ width: currentProgress + '%' }}
-          >
-            <div className="vp-progress__range--current__thumb" />
-          </div>
-          <input
-            className="vp-progress__range--seek"
-            type="range"
-            step="any"
-            max={videoDuration}
-            value={seekProgress}
-            onMouseMove={onHover}
-            onChange={onSeek}
-            onKeyDown={preventDefault}
-          />
-        </div>
-
-        <span
-          className="vp-progress__tooltip"
-          style={{ left: seekTooltipPosition }}
+  return (
+    <div className="vp-progress">
+      <div className="vp-progress__range">
+        <div className="vp-progress__range--background" />
+        <div
+          className="vp-progress__range--buffer"
+          style={{ width: bufferProgress + '%' }}
+        />
+        <div
+          className="vp-progress__range--current"
+          style={{ width: currentProgress + '%' }}
         >
-          {seekTooltip}
-        </span>
+          <div className="vp-progress__range--current__thumb" />
+        </div>
+        <input
+          className="vp-progress__range--seek"
+          type="range"
+          step="any"
+          max={videoDuration}
+          value={seekProgress}
+          onMouseMove={onHover}
+          onChange={onSeek}
+          onKeyDown={preventDefault}
+        />
       </div>
-    );
-  }
-);
+
+      <span
+        className="vp-progress__tooltip"
+        style={{ left: seekTooltipPosition }}
+      >
+        {seekTooltip}
+      </span>
+    </div>
+  );
+};
 
 export default memo(Progress);
